@@ -1,7 +1,6 @@
 import { ErrorResponse } from "../model/http/base_responses";
 import { Request, Response, NextFunction } from "express";
-import { AuthError } from "../error/auth_errors";
-import { StorageError } from "../error/storage_errors";
+import { BaseError } from "../error/base/base_error";
 
 export function errorHandler(
     error: Error,
@@ -11,14 +10,9 @@ export function errorHandler(
 ) {
     console.error('Error:', error);
 
-    if (error instanceof AuthError ||
-        error instanceof StorageError
+    if (error instanceof BaseError
     ) {
-        return res.status(error.statusCode).json({
-            message: error.message,
-            code: error.code,
-            details: error.details
-        });
+        return res.status(error.statusCode).json(error.toJSON());
     }
 
     return res.status(500).json({

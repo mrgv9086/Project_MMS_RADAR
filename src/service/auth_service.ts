@@ -1,41 +1,25 @@
 import UserRepository from "../repository/user_repository";
 import { User } from "@prisma/client";
 import { AuthorizationResponse } from "../model/http/auth/responses";
-import jwt, { SignOptions } from "jsonwebtoken";
-import { StringValue } from "ms";
+import jwt from "jsonwebtoken";
 import { LoginRequest, RegisterRequest } from "../model/http/auth/requests";
 import bcrypt from "bcrypt";
 import { AuthError, AuthErrorCode } from "../error/auth_errors";
+import { Config } from "../config";
 
 class AuthService {
-
-    static readonly SECRET_KEY = (() => {
-        const key = process.env.SECRET_KEY;
-        if (!key) throw new Error("Provide SECRET_KEY in environment variables");
-        return key;
-    })();
-
-    private static readonly ACCESS_TOKEN_CONFIG: SignOptions = {
-        expiresIn: (process.env.ACCESS_TOKEN_EXPIRES_IN || '15m') as StringValue,
-        issuer: process.env.JWT_ISUER || 'web-archive'
-    };
-
-    private static readonly REFRESH_TOKEN_CONFIG: SignOptions = {
-        expiresIn: (process.env.REFRESH_TOKEN_EXPIRES_IN || '1h') as StringValue,
-        issuer: process.env.JWT_ISUER || 'web-archive'
-    }
 
     private generateTokens(user: User): { accessToken: string; refreshToken: string } {
         const accessToken = jwt.sign(
             {id: user.id, username: user.username, type: 'access'},
-            AuthService.SECRET_KEY!,
-            AuthService.ACCESS_TOKEN_CONFIG
+            Config.SECRET_KEY!,
+            Config.ACCESS_TOKEN_CONFIG
         );
 
         const refreshToken = jwt.sign(
             {id: user.id, type: 'refresh'},
-            AuthService.SECRET_KEY!,
-            AuthService.REFRESH_TOKEN_CONFIG
+            Config.SECRET_KEY!,
+            Config.REFRESH_TOKEN_CONFIG
         );
 
         return {accessToken, refreshToken};
@@ -87,7 +71,7 @@ class AuthService {
 
     async refreshTokens(refreshToken: string): Promise<AuthorizationResponse> {
 
-        const decoded = jwt.verify(refreshToken, AuthService.SECRET_KEY!) as {
+        const decoded = jwt.verify(refreshToken, Config.SECRET_KEY!) as {
             id: string;
             type: string;
         };
@@ -124,4 +108,3 @@ class AuthService {
 }
 
 export default new AuthService;
-export const SECRET_KEY = AuthService.SECRET_KEY;

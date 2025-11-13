@@ -8,15 +8,10 @@ import fs from 'fs/promises';
 import { StorageResponse } from "../model/http/storage/responses";
 import { StorageWithUser } from "../model/http/storage/dto";
 import { StorageError, StorageErrorCode } from "../error/storage_errors";
+import { Config } from "../config";
 
 
 class StorageService {
-
-    static readonly STORAGE_BASE_PATH = (() => {
-        const path = process.env.STORAGE_BASE_PATH;
-        if (!path) throw Error("Provide STORAGE_BASE_PATH in environment variables");
-        return path;
-    })();
 
     async createStorage(body: CreateStorageRequest, userId: number): Promise<StorageResponse> {
 
@@ -31,7 +26,7 @@ class StorageService {
             ? `users/${userId}/private/${cleanName}`
             : `users/${userId}/shared/${cleanName}`;
 
-        const fullPath = path.join(StorageService.STORAGE_BASE_PATH, prefixPath);
+        const fullPath = path.join(Config.STORAGE_BASE_PATH, prefixPath);
         await fs.mkdir(fullPath, {recursive: true});
 
         const newStorage: Storage = await StorageRepository.createStorage(userId, fullPath, body);

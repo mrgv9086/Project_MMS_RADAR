@@ -1,5 +1,5 @@
 import { Storage } from "@prisma/client"
-import { BaseRepository } from "./base_repository";
+import { BaseRepository } from "./base/base_repository";
 import { CreateStorageRequest, StorageFilter } from "../model/http/storage/requests";
 import { StorageWithUser } from "../model/http/storage/dto";
 
@@ -51,7 +51,6 @@ class StorageRepository extends BaseRepository {
     }
 
     async deleteStorage(storageId: number) {
-        // Исправлено: добавлен await
         await this.prisma.storage.delete({
             where: {
                 id: storageId
@@ -60,7 +59,6 @@ class StorageRepository extends BaseRepository {
     }
 
     async deleteStorageForce(storageId: number) {
-        // Исправлено: добавлен await
         await this.prisma.$transaction(async (tx) => {
             await tx.file.deleteMany({
                 where: {

@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { authenticateJWT } from '../middleware/auth_middleware';
 import AuthController from "../controllers/auth_controller";
 import StorageController from "../controllers/storage_controller";
+import FileController from "../controllers/file_controller";
 
 const router = Router();
 
@@ -12,6 +13,12 @@ router.post('/refresh', AuthController.refresh);
 router.post('/storage', authenticateJWT, StorageController.createStorage);
 router.get('/storage', authenticateJWT, StorageController.getAvailableStorages);
 router.delete('/storage', authenticateJWT, StorageController.deleteStorage);
+
+router.get('/storage/:storageName/file', authenticateJWT, FileController.getFiles)
+router.get('/storage/:storageName/file/:fileName/download', authenticateJWT, FileController.downloadFile)
+router.get('/storage/:storageName/file/:fileName', authenticateJWT, FileController.getFile)
+router.post('/storage/:storageName/file/upload', authenticateJWT, FileController.uploadFile);
+router.delete('/storage/:storageName/file/:fileName', authenticateJWT, FileController.deleteFile);
 
 // GET /api/hello - Hello World endpoint
 router.get('/hello', (req, res) => {
@@ -28,7 +35,7 @@ router.get('/info', authenticateJWT, (req, res) => {
         name: 'File Storage Server',
         version: '1.0.0',
         description: 'Server for file storage with authorization',
-        author: 'Your Name'
+        author: 'Ivan'
     });
 });
 

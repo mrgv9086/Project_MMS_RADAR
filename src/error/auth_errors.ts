@@ -1,3 +1,5 @@
+import { BaseError } from "./base/base_error";
+
 export enum AuthErrorCode {
     USER_ALREADY_EXISTS = 'USER_ALREADY_EXISTS',
     USER_NOT_FOUND = 'USER_NOT_FOUND',
@@ -5,10 +7,8 @@ export enum AuthErrorCode {
     INVALID_TOKEN_TYPE = "INVALID_TOKEN_TYPE",
     TOKEN_REVOKED = 'TOKEN_REVOKED',
 }
-
-export class AuthError extends Error {
-
-    private static statusMap: Record<AuthErrorCode, number> = {
+export class AuthError extends BaseError {
+    readonly statusMap: Record<AuthErrorCode, number> = {
         [AuthErrorCode.USER_ALREADY_EXISTS]: 400,
         [AuthErrorCode.USER_NOT_FOUND]: 404,
         [AuthErrorCode.INVALID_CREDENTIALS]: 400,
@@ -16,17 +16,7 @@ export class AuthError extends Error {
         [AuthErrorCode.TOKEN_REVOKED]: 401,
     };
 
-    constructor(
-        public code: AuthErrorCode,
-        message: string,
-        public details?: any
-    ) {
-        super(message);
-        this.name = 'AuthError';
-        this.code = code;
-    }
-
-    get statusCode(): number {
-        return AuthError.statusMap[this.code]
+    constructor(code: AuthErrorCode, message: string, details?: any) {
+        super(code, message, details);
     }
 }
