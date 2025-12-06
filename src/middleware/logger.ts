@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
+
+//ничего не делает
 export function logger() {
     return (req: Request, res: Response, next: NextFunction) => {
         const start = Date.now();

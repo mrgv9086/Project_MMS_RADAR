@@ -35,7 +35,7 @@ class AuthService {
             );
         }
 
-        const hashedPassword = await bcrypt.hash(body.password, 12);
+        const hashedPassword = await bcrypt.hash(body.password, 12);//хэш пароля
         const user: User = await UserRepository.createUser(body.username, hashedPassword);
 
         const tokens = this.generateTokens(user);

@@ -13,7 +13,7 @@ class StorageController {
     async createStorage(req: AuthRequest, res: Response<StorageResponse>) {
         return res.json(await StorageService.createStorage(req.body, req.user!.id))
     }
-
+//тут валидация(проверка запроса от пользователя, описание схемы запроса от пользователя)
     async getAvailableStorages(req: AuthRequest, res: Response<Array<StorageResponse>>) {
 
         const validatedQuery: StorageFilter = GetStoragesQuerySchema.parse(req.query);

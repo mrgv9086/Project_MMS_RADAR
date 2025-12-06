@@ -9,7 +9,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
-app.use(morgan(':date[iso] - :method :url - :status - :response-time ms '));
+app.use(morgan(':date[iso] - :method :url - :status - :response-time ms ')); // логи запросов
 app.use('/api', apiRoutes);
 app.use(errorHandler);
 

@@ -14,7 +14,7 @@ export function authenticateJWT(req: AuthRequest, res: Response, next: NextFunct
             return res.status(403).json({message: 'Token verification failed'});
         }
 
-        req.user = decoded as { id: number; username: string };
+        req.user = decoded as { id: number; username: string };//добавление пользователя
         next();
     });
 }

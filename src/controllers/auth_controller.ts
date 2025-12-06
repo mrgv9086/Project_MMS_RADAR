@@ -20,3 +20,4 @@ class AuthController {
 }
 
 export default new AuthController;
+//патерн mvc

@@ -12,10 +12,10 @@ export function errorHandler(
 
     if (error instanceof BaseError
     ) {
-        return res.status(error.statusCode).json(error.toJSON());
+        return res.status(error.statusCode).json(error.toJSON()); // возврат ошибок пользователю
     }
 
-    return res.status(500).json({
+    return res.status(500).json({ //если это внутренняя ошибка(server) то 500
         message: 'Internal server error',
         code: 'INTERNAL_ERROR'
     });

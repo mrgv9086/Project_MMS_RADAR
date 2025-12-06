@@ -1,10 +1,10 @@
 import { SignOptions } from "jsonwebtoken";
 import { StringValue } from "ms";
-import dotenv from 'dotenv';
+import dotenv from 'dotenv'; // файл хранит изм. инфу
 import path from "path";
 
 dotenv.config({
-    path: path.resolve(process.cwd(), "../", '.env')
+    path: path.resolve(process.cwd(), "../", '.env') //ручной поиск файла
 });
 
 
