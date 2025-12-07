@@ -7,7 +7,7 @@ import FileRepository from "../repository/file_repository";
 import { AuthRequest } from "../model/http/base_requests";
 import fs from "fs/promises";
 import { Config } from "../config";
-import { Storage, File } from "@prisma/client";
+import {Storage, File, StorageType} from "@prisma/client";
 import { FileError, FileErrorCode } from "../error/file_errors";
 import { FileResponse } from "../model/http/file/responses";
 import { FileWithUser } from "../model/http/file/dto";
@@ -234,7 +234,21 @@ class FileService {
     }
 
     async downloadFile(storageName: string, userId: number, fileName: string): Promise<{ filePath: string; fileRecord: File }> {
-        const storage: Storage = await this.getStorageValidated(userId, storageName);
+        const storage = await StorageRepository.findByName(storageName);
+        if (!storage) {
+            throw new StorageError(
+                StorageErrorCode.STORAGE_NOT_FOUND,
+                `Storage '${storageName}' not found`
+            );
+        }
+        if (storage.type === StorageType.private) {
+            if (storage.created_by != userId){
+                throw new StorageError(
+                    StorageErrorCode.STORAGE_NOT_FOUND,
+                    `Storage '${storageName}' not found for user ${userId}`
+                );
+            }
+        }
         const file: FileWithUser | null = await FileRepository.findByStorageAndName(storage.id, fileName);
 
         if (!file) {

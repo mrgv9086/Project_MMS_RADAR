@@ -11,6 +11,12 @@ class StorageRepository extends BaseRepository {
         });
     }
 
+    async findByName(name: string): Promise<Storage | null> {
+        return this.prisma.storage.findFirst({
+            where: {name},
+        });
+    }
+
     async createStorage(userId: number, path: string, data: CreateStorageRequest) {
         return this.prisma.storage.create({
             data: {
